@@ -1,3 +1,6 @@
+# kupi
+![image](images/kupi.png)
+
 # Table of Contents
 * [Basic Outline](#basic-outline)
 * [OS Install](#os-install)
