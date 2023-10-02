@@ -1,6 +1,6 @@
 # kupi
-They call me old mayonnaise (old-man-[h]ayes)!
 ![image](images/kupi.png)
+They call me old mayonnaise (`old-man-[h]ayes`)!
 
 # Table of Contents
 * [Basic Outline](#basic-outline)
