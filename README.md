@@ -1,4 +1,5 @@
 # kupi
+They call me old mayonnaise (old-man-[h]ayes)!
 ![image](images/kupi.png)
 
 # Table of Contents
