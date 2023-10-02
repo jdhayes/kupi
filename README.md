@@ -2,6 +2,7 @@
 * [Basic Outline](#basic-outline)
 * [OS Install](#os-install)
 * [Roles](#roles)
+* [Dependencies](#dependencies)
 * [Kubernetes](#kubernets)
 
 # Objective
