@@ -22,8 +22,17 @@ However, here are some things of note...
  cat /boot/cmdline.txt
 console=serial0,115200 console=tty1 root=PARTUUID=79aa9fb7-02 rootfstype=ext4 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 fsck.repair=yes rootwait
 ```
-15. May have to mount cgroups at diff location, or configure containerd to look in the correct spot:
+15. May have to manually mount cgroups, or configure systemd service to do it (existing serivce?):
 ```bash
 sudo mkdir /sys/fs/cgroup/systemd
 sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 ```
+16. Helm install of coredns was working, but the `Corefile` was default. To update/edit had to use this:
+```bash
+kubectl -n kube-system edit configmap coredns-coredns
+```
+17. Also useful there were some deployment yamls I wanted to check, so I used this:
+```bash
+kubectl get deploy -n kube-system -o yaml
+```
+I am pretty sure you can use this for singular deployment units by specifing the name, as well as nodes if you change the type from `deploy`.
