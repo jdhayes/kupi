@@ -22,3 +22,8 @@ However, here are some things of note...
  cat /boot/cmdline.txt
 console=serial0,115200 console=tty1 root=PARTUUID=79aa9fb7-02 rootfstype=ext4 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 fsck.repair=yes rootwait
 ```
+15. May have to mount cgroups at diff location, or configure containerd to look in the correct spot:
+```bash
+sudo mkdir /sys/fs/cgroup/systemd
+sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+```
