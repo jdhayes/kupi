@@ -16,3 +16,4 @@ However, here are some things of note...
 10. Had to move cni plugins to `/opt/cni/bin`, they were in `/opt/cni` for some reason.
 11. Had to resume nodes after backup, with `kubectl uncordon rpi4`.
 12. Found compatible [runc](https://github.com/opencontainers/runc/releases) with from [containerd repo](https://github.com/containerd/containerd/blob/v1.6.24/script/setup/runc-version).
+13. Symlinked `runc` to `/usr/local/bin` but still kept the deb package installed too. Should probably remove it at some point...but it wants to remove `containerd` which I also installed on top of the deb package, it was easier (and dirty).
