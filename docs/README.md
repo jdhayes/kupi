@@ -44,4 +44,21 @@ kubectl get deploy -n kube-system -o yaml
 ```
 I am pretty sure you can use this for singular deployment units by specifing the name, as well as nodes if you change the type from `deploy`.
 
-18. Still had `coredns` routing issues to and from the same node that runs the service and container. Probabaly due to the lack of `sysctl -w net.bridge.bridge-nf-call-iptables=1`, thus it was suggested to use `flannel` instead of `netfilter` on RPis 🙃.
+18. Still had `coredns` routing issues to and from the same node that runs the service and container. Probabaly due to the lack of `sysctl -w net.bridge.bridge-nf-call-iptables=1`, thus it was suggested to use `flannel` instead of `netfilter` on RPis 🙃. On second thought, `flannel` requires the same kernel flag, so what is the point in changing to `flannel` 🙃🙃. Also found that other users have used `netfilter` on RPi for Kubernetes, so that seems legit:
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+ 
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sudo sysctl --system
+```
