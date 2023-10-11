@@ -31,6 +31,13 @@ sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 ```bash
 kubectl -n kube-system edit configmap coredns-coredns
 ```
+This still failed, since some fields cannot be changed (ie. `clusterIP`), so had to reinstall via `helm` like so:
+```bash
+# Had an error, but container, deploy, and services were all gone
+helm uninstall coredns
+# Re-install with correct clusterIP (also references in kublete config...)
+helm --namespace=kube-system install --set serviceAccount.create=true --set service.clusterIP=10.32.0.10 coredns coredns/coredns
+```
 17. Also useful there were some deployment yamls I wanted to check, so I used this:
 ```bash
 kubectl get deploy -n kube-system -o yaml
