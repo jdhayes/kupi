@@ -17,3 +17,8 @@ However, here are some things of note...
 11. Had to resume nodes after backup, with `kubectl uncordon rpi4`.
 12. Found compatible [runc](https://github.com/opencontainers/runc/releases) with from [containerd repo](https://github.com/containerd/containerd/blob/v1.6.24/script/setup/runc-version).
 13. Symlinked `runc` to `/usr/local/bin` but still kept the deb package installed too. Should probably remove it at some point...but it wants to remove `containerd` which I also installed on top of the deb package, it was easier (and dirty).
+14. Had to add some flags to RPi kernels (notice the 3 cgroup options):
+```bash
+ cat /boot/cmdline.txt
+console=serial0,115200 console=tty1 root=PARTUUID=79aa9fb7-02 rootfstype=ext4 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 fsck.repair=yes rootwait
+```
