@@ -15,3 +15,4 @@ However, here are some things of note...
 9. Used newer method of installing coredns via helm charts ([helm binaries](https://github.com/helm/helm/releases), [install instructions](https://github.com/coredns/helm)
 10. Had to move cni plugins to `/opt/cni/bin`, they were in `/opt/cni` for some reason.
 11. Had to resume nodes after backup, with `kubectl uncordon rpi4`.
+12. Found compatible [runc](https://github.com/opencontainers/runc/releases) with from [containerd repo](https://github.com/containerd/containerd/blob/v1.6.24/script/setup/runc-version).
