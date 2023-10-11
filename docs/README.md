@@ -12,3 +12,6 @@ However, here are some things of note...
 7. I ended up using the `admin.kubeconfig` which contains the authentication of the `admin` user, rather than the individual kubeconfig that should have been used for the `kube-proxy`.
 8. Had to download a newer version of `containerd` (`1.6.X`), the native Debian version (`~1.3`) had some kind of bug.
    This was easy enough to do with `aarm64` (officially supported), but for `armv7` I had to look around [here](https://github.com/alexellis/containerd-arm/releases).
+9. Used newer method of installing coredns via helm charts ([helm binaries](https://github.com/helm/helm/releases), [install instructions](https://github.com/coredns/helm)
+10. Had to move cni plugins to `/opt/cni/bin`, they were in `/opt/cni` for some reason.
+11. Had to resume nodes after backup, with `kubectl uncordon rpi4`.
