@@ -17,16 +17,24 @@ However, here are some things of note...
 11. Had to resume nodes after backup, with `kubectl uncordon rpi4`.
 12. Found compatible [runc](https://github.com/opencontainers/runc/releases) with from [containerd repo](https://github.com/containerd/containerd/blob/v1.6.24/script/setup/runc-version).
 13. Symlinked `runc` to `/usr/local/bin` but still kept the deb package installed too. Should probably remove it at some point...but it wants to remove `containerd` which I also installed on top of the deb package, it was easier (and dirty).
-14. Had to add some flags to RPi kernels (notice the 3 cgroup options):
+14. Had to add some flags to RPi kernels (notice the 4 cgroup options, the last one is for v1 not v2):
 ```bash
  cat /boot/cmdline.txt
-console=serial0,115200 console=tty1 root=PARTUUID=79aa9fb7-02 rootfstype=ext4 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 fsck.repair=yes rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=79aa9fb7-02 rootfstype=ext4 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 fsck.repair=yes systemd.unified_cgroup_hierarchy=0 rootwait
 ```
-15. May have to manually mount cgroups, or configure systemd service to do it (existing serivce?):
+15. Use the cgroup service since manually doing this may not be working correctly (OOMs):
 ```bash
-sudo mkdir /sys/fs/cgroup/systemd
-sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+sudo apt-get install libcgroup1 cgroup-tools cgroupfs-mount
+
+# Always dead, I guess this is masked by another service...
+systemctl status cgroupfs-mount.service
+
+# Can check by looking at mounts, should be something like; /sys/fs/cgroup/memory and /sys/fs/cgroup/cpu
+mount | grep cgroup
 ```
+
+>NOTE: After #14 and #15 are updated, then reboot.
+
 16. Helm install of coredns was working, but the `Corefile` was default. To update/edit had to use this:
 ```bash
 kubectl -n kube-system edit configmap coredns-coredns
