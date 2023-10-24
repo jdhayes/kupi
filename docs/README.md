@@ -45,6 +45,7 @@ This still failed, since some fields cannot be changed (ie. `clusterIP`), so had
 helm uninstall coredns
 # Re-install with correct clusterIP (also references in kublete config...)
 helm --namespace=kube-system install --set serviceAccount.create=true --set service.clusterIP=10.32.0.10 coredns coredns/coredns
+#helm --namespace=kube-system install --set serviceAccount.name=coredns --set serviceAccount.create=true --set service.clusterIP=10.32.0.10 coredns coredns/coredns
 ```
 17. Also useful there were some deployment yamls I wanted to check, so I used this:
 ```bash
