@@ -71,3 +71,85 @@ EOF
 
 sudo sysctl --system
 ```
+
+# Interesting things for later
+
+* [Netowrk Mesh layer](https://istio.io/latest/) - Jake used `srv/istio` name space for creating a port forward via kubectl.
+Perhaps a more advanced method than I need, but good to know it exists. Has some the ability to control flow in and out of a cluster (Ingress/Egress).
+* [Scalable storage for Prometheus](https://cortexmetrics.io/) - Could be useful for monitoring large clusters, or many clusters.
+
+# Do NOT install using helm
+
+```bash
+helm install flannel --set podCidr="10.32.0.0/24" --namespace kube-flannel flannel/flannel
+```
+Better to use `kubectl apply flannel.yml`, which contains RBAC.
+
+# Did I need this?
+
+I needed apparmor:
+
+```bash
+sudo apt install apparmor
+```
+
+# Tunned Pis to use only 16MB of gpu memory from /boot/config.txt
+
+Why did I do this? Not sure, just to max system memory?
+
+```
+gpu_mem=16
+```
+
+# Work out IP ranges very carefully
+
+The service ip range for normal Kubernets defaults to 10.96.0.0/12 and the pod ip range differs from on the CNI you use, but it's often common to set it to 10.244.0.0/16
+Since this is a custom roll out, then the IPs are not the same as the normal Kubernetes defaults (even Rancher and Goolge have there own ranges).
+
+Check once, and it was a mess, IP ranges:
+  * internal FW   - 10.240.0.0/24,10.200.0.0/16
+  * k controllers - 10.240.0.1${i} (254 nodes)
+  * cluster CIDR  - 10.200.0.0/16 (254 subnets)
+  * worker node   - 10.240.0.2${i}
+    * meta - pod-cidr=10.200.${i}.0/24
+  * k api         - service-cluster-ip-range=10.32.0.0/24
+  * k controller  - service-cluster-ip-range=10.32.0.0/24
+    * cluster-cidr=10.200.0.0/16
+
+clusterIP (service)?
+first IP address (10.32.0.1) from the address range (10.32.0.0/24)
+
+Part of why this was confusing is that the "the hard way" instructrions mask some of the complexity by using in built Google variables, and then later calls those variables
+when configuring Kubernetes.
+I believe these variables were sometimes dynamically created based on the number of controllers one was deploying, thus each controller used a different value and was NOT
+a common variable amoung all the controllers.
+
+# Fixing IP Ranges
+
+Added to kube-manager systemd unit file.
+This allows auto assignment of cidrs, sometimes not super clean, but better that then hardcoding each unique range:
+
+```
+ --allocate-node-cidrs=true \
+```
+
+Looks like the IP ranges are in sequence by default?
+When using the auto assing mentioned above, the ranges are sequencially assigned:
+
+```bash
+kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}'
+kubectl describe node | egrep 'PodCIDR|Name:'
+```
+
+So I fixed the kubelet and cni files to match what kubernetes had mapped in the above commands.
+
+# Manually load vxlan module
+
+I had to manually do this the first time when configuring and testing without reboot:
+
+```bash
+sudo modprobe vxlan
+```
+
+But I think this is not needed if/when reboot occurs.
+
