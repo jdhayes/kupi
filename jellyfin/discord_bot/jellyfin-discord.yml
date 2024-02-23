@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin-discord-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin-discord
+  template:
+    metadata:
+      labels:
+        app: jellyfin-discord
+    spec:
+      containers:
+        - name: jellyfin
+          image: "ghcr.io/manuel-rw/jellyfin-discord-music-bot:latest"
+          env:
+            - name: DISCORD_CLIENT_TOKEN
+              value: "DISCORD_CLIENT_TOKEN"
+            - name: JELLYFIN_SERVER_ADDRESS
+              value: "http://JELLYFIN_SERVER:8096"
+            - name: JELLYFIN_AUTHENTICATION_USERNAME
+              value: "JELLYFIN_USER"
+            - name: JELLYFIN_AUTHENTICATION_PASSWORD
+              value: "JELLYFIN_PASS"
+            - name: JELLYFIN_APP_NAME
+              value: "DISCORD_APP_NAME"
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 8.8.8.8
