@@ -7,5 +7,5 @@ resources:
       - aescbc:
           keys:
             - name: key1
-              secret: 4FvtkpvQrzD0y/0hf++ma9r6ooRvqt/vOqDIHX4SPXA=
+              secret: GENERATED_KEY_FROM_SCRIPT
       - identity: {}
