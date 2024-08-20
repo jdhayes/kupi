@@ -43,6 +43,28 @@ sudo ETCDCTL_API=3 etcdctl member list \
   --key=/etc/etcd/kubernetes-key.pem
 ```
 
+And with Version 3:
+
+```bash
+export ETCDCTL_API=3
+etcdctl --endpoints=https://127.0.0.1:2379 --cert=/etc/etcd/kubernetes.pem --key=/etc/etcd/kubernetes-key.pem --cacert=/etc/etcd/ca.pem member list
+```
+
+Then remove node using member ID:
+
+```bash
+etcdctl --endpoints=https://192.168.1.14:2379 --cert-file=/etc/etcd/kubernetes.pem --key-file=/etc/etcd/kubernetes-key.pem --ca-file=/etc/etcd/ca.pem  member remove ${MEMBER_ID}
+```
+
+You may want to add a new node, or the same node (remember to delete old data first):
+
+```bash
+NODE_NAME=rpi3
+NODE_IP=192.168.1.13
+
+etcdctl --endpoints=https://192.168.1.14:2379 --cert-file=/etc/etcd/kubernetes.pem --key-file=/etc/etcd/kubernetes-key.pem --ca-file=/etc/etcd/ca.pem member add ${NODE_NAME} --peer-urls=http://${NODE_IP}:2380
+```
+
 # Security?
 
 https://etcd.io/docs/v3.5/op-guide/security/
