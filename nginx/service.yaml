@@ -13,4 +13,4 @@ spec:
   - name: webserver-endpoint
     protocol: TCP
     targetPort: webserver-port
-    port: 8080
+    port: 80
